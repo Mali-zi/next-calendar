@@ -1,15 +1,16 @@
-'use client'
+'use client';
 
 import React, { ErrorInfo } from 'react';
 
 type Props = {
   readonly children: React.ReactNode | React.ReactNode[];
-}
+};
 
 type State = {
-  readonly error: Error | null;
-  readonly errorInfo: React.ErrorInfo | null;
-}
+  error: Error | null;
+  errorInfo: React.ErrorInfo | null;
+  hasError: boolean;
+};
 
 export default class ErrorBoundary extends React.Component<Props, State> {
   public static readonly defaultProps = {};
@@ -19,28 +20,30 @@ export default class ErrorBoundary extends React.Component<Props, State> {
     this.state = {
       error: null,
       errorInfo: null,
+      hasError: false,
     };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-
     this.setState({
       error: error,
       errorInfo: errorInfo,
+      hasError: true,
     });
   }
 
   render() {
-    if (this.state.error) {
+    if (this.state.hasError) {
       return (
-        <div className="flex flex-col text-center text-red-500 p-4 m-4">
+        <div className="flex flex-col h-screen justify-center text-center font-semibold text-2xl text-red-500 p-4 m-4">
           <h2>Ooops! Something went wrong</h2>
           <h3>Try to reload the page...</h3>
-          <p>{this.state.error.name}</p>
-          <p>{this.state.error.message}</p>
-          <p>{this.state.error.toString()}</p>
 
-          <p>{this.state.errorInfo && this.state.errorInfo.componentStack}</p>
+          {this.state.error ? (
+              <p>{this.state.error.name}: {this.state.error.message}</p>
+          ) : (
+            <></>
+          )}
         </div>
       );
     }

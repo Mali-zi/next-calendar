@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Suspense } from 'react';
 import Loading from './loading';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 export const metadata: Metadata = {
   title: 'Calendar App',
@@ -16,9 +17,11 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body>
-        <Suspense fallback={<Loading />}>
-          {children}
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<Loading />}>
+            {children}
+            </Suspense>
+        </ErrorBoundary>
       </body>
     </html>
   );
