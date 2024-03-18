@@ -1,4 +1,4 @@
-import Calend from "@/components/Calend";
+import Calend from '@/components/Calendar/Calend';
 
 async function getData() {
   const options = {
@@ -25,11 +25,9 @@ async function getData() {
 
 export default async function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="flex w-full justify-center border-b border-gray-300 bg-zinc-200 pb-6 pt-8 backdrop-blur-2xl">
-          Календарь
-        </p>
+    <main className="flex min-h-screen flex-col items-center justify-between">
+      <div className="z-10 max-w-5xl w-full items-center justify-between">
+        <p className="flex w-full justify-center p-8">Календарь</p>
         <div className="flex h-full w-full items-end justify-center bg-white">
           <Calend />
         </div>
