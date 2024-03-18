@@ -1,11 +1,14 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   Calendar,
   dateFnsLocalizer,
   Event,
   DateLocalizer,
+  Views,
+  Components,
+  ToolbarProps
 } from 'react-big-calendar';
 import withDragAndDrop, {
   withDragAndDropProps,
@@ -21,14 +24,10 @@ import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { initEvents } from './events';
 import './calendar.css';
-
-interface IEvent {
+import { generateId } from '@/utils/generateId';
+import Toolbar from './Toolbar';
+export interface IEventInfo extends Event {
   id: number;
-  title: string;
-  start: Date;
-  end: Date;
-  allDay?: boolean;
-  resource?: any;
   desc?: string;
 }
 
@@ -43,8 +42,8 @@ const addHours = (date: Date, hours: number) => {
 };
 
 const locales = {
-  // "en-US": enUS,
-  ru: ru,
+  "en-US": enUS,
+  "ru": ru,
 };
 
 const localizer = dateFnsLocalizer({
@@ -55,8 +54,67 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
+const initialEventFormState = {
+  description: '',
+};
+
+const lang = {
+  en: undefined,
+  'en-GB': undefined,
+  'en-US': undefined,
+  es: {
+    week: 'Semana',
+    work_week: 'Semana de trabajo',
+    day: 'Día',
+    month: 'Mes',
+    previous: 'Atrás',
+    next: 'Después',
+    today: 'Hoy',
+    agenda: 'El Diario',
+
+    showMore: (count: number) => `+${count} más`,
+  },
+  fr: {
+    week: 'La semaine',
+    work_week: 'Semaine de travail',
+    day: 'Jour',
+    month: 'Mois',
+    previous: 'Antérieur',
+    next: 'Prochain',
+    today: `Aujourd'hui`,
+    agenda: 'Ordre du jour',
+
+    showMore: (count: number) => `+${count} plus`,
+  },
+  'ru': {
+    today: 'Сегодня',
+    next: '>',
+    previous: '<',
+    month: 'Месяц',
+    week: 'Неделя',
+    day: 'День',
+    allDay: 'Весь день',
+    noEventsInRange: 'Событий нет',
+    date: 'Дата',
+    time: 'Время',
+    event: 'Событие',
+    showMore: (count: number) => `показать все(${count}+)`,
+  }
+}
+
 export default function Calend() {
-  const [events, setEvents] = useState<IEvent[]>(initEvents);
+  const today = useMemo(() => new Date(), []);  
+  const [events, setEvents] = useState<IEventInfo[]>(initEvents);
+  const [openSlot, setOpenSlot] = useState(false);
+  const [currentEvent, setCurrentEvent] = useState<Event | IEventInfo | null>(
+    null
+  );
+  const [eventInfoModal, setEventInfoModal] = useState(false);
+  const [eventFormData, setEventFormData] = useState(initialEventFormState);
+  const [showMoreEvents, setShowMoreEvents] = useState<Event[]>([]);
+  const [locale, setLocale] = useState<'en' | 'en-GB' | 'en-US' | 'es' | 'fr' | 'ru'>("ru");
+  // initialize initial view
+  const [view, setView] = useState<'day' | 'week' | 'month'>('month');
 
   const DnDCalendar = withDragAndDrop(Calendar);
 
@@ -120,15 +178,18 @@ export default function Calend() {
 
   const handleSelectEvent = (event: Event) => {
     console.log(event.title);
+    setCurrentEvent(event);
+    setEventInfoModal(true);
   };
 
   const handleSelectSlot = ({ start, end }: ISlotInfo) => {
+    setOpenSlot(true);
     const title = window.prompt('New Event name');
     if (title) {
       setEvents((prev) => [
         ...prev,
         {
-          id: Date.now(),
+          id: generateId(),
           title,
           start,
           end,
@@ -137,21 +198,42 @@ export default function Calend() {
     }
   };
 
+  const handleClose = () => {
+    setEventFormData(initialEventFormState);
+    setOpenSlot(false);
+  };
+
   return (
     <DnDCalendar
-      defaultView={'month'}
-      defaultDate={new Date()}
-      views={['month']}
+      // defaultView={'month'}
+      defaultDate={today}
+      // views={['month']}
+      // defaultView={Views.MONTH}
+      views={[Views.MONTH, Views.WEEK, Views.DAY]}
       events={events}
       localizer={localizer}
+      culture={locale}
+      components={{
+        toolbar: () => Toolbar({locale, today}),
+      }}
+      messages={lang[locale]}
       onEventDrop={onEventDrop}
       draggableAccessor={(event) => true}
       resizable={false}
+      selectable={true}
       step={15} // number of minutes per timeslot
       onSelectSlot={handleSelectSlot}
       onSelectEvent={(event: Event, e: React.SyntheticEvent<HTMLElement>) =>
         handleSelectEvent(event)
       }
+      onShowMore={(events) => setShowMoreEvents(events)}
+      popup={true} // Show truncated events in an overlay when you click the "+x more" link.
+      onView={(view) => view}
+      view={view}
+      formats={{
+        dayFormat: (date: Date, culture: any, localizer: any) => localizer.format(date, 'EEEE', culture),
+        dayHeaderFormat: (date: Date, culture: any, localizer: any) => localizer.format(date, 'EE MMM do', culture),
+      }}
       className="big-calendar"
     />
   );
