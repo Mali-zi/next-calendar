@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './app.css';
 import { Suspense } from 'react';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import Loading from './loading';

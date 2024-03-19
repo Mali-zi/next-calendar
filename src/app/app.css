@@ -1,0 +1,14 @@
+.calendar-main-container {
+  position: relative;
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  border-right: 0 solid var(--ui-color-palette-white-base, #fff);
+  transition:
+    310ms width,
+    300ms opacity ease;
+  transform: translate3d(0, 0, 0);
+  overflow: hidden;
+  border-radius: 10px;
+  border-collapse: separate;
+}
