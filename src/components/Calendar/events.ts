@@ -1,5 +1,3 @@
-const now = new Date();
-
 export const initEvents = [
   {
     id: 1,
@@ -139,8 +137,8 @@ export const initEvents = [
   {
     id: 15,
     title: 'Point in Time Event',
-    start: now,
-    end: now,
+    start: new Date(2024, 2, 19, 19, 30, 0),
+    end: new Date(2024, 2, 19, 2, 0, 0),
   },
   {
     id: 16,

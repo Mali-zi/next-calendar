@@ -1,6 +1,33 @@
 .big-calendar {
   height: 100vh;
   width: 100%;
-  max-width: 900px;
+  min-width: 900px;
   background-color: rgb(248, 249, 224);
+}
+
+.calendar-navigation-previous,
+.calendar-navigation-next {
+  position: relative;
+  bottom: -1px;
+  display: inline-block;
+  width: 20px;
+  height: 24px;
+  vertical-align: middle;
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity 220ms ease;
+}
+
+.calendar-navigation-current {
+  display: inline-block;
+  padding: 0 2px;
+  border-bottom: 1px dashed var(--ui-color-background-transparent, transparent);
+  color: var(--ui-color-palette-gray-90, #525c69);
+  vertical-align: middle;
+  font-size: var(--ui-font-size-lg, 15px);
+  font-family: var(--ui-font-family-secondary, var(--ui-font-family-open-sans));
+  font-weight: var(--ui-font-weight-regular, 400);
+  line-height: 21px;
+  cursor: pointer;
+  transition: all 220ms ease;
 }

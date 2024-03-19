@@ -1,31 +1,31 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Calendar,
   dateFnsLocalizer,
   Event,
-  DateLocalizer,
   Views,
-  Components,
-  ToolbarProps
 } from 'react-big-calendar';
 import withDragAndDrop, {
   withDragAndDropProps,
 } from 'react-big-calendar/lib/addons/dragAndDrop';
-import format, { formatDate } from 'date-fns/format';
+import { format } from 'date-fns/format';
 import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
-import enUS from 'date-fns/locale/en-US';
-import ru from 'date-fns/locale/ru';
+import { enUS } from 'date-fns/locale/en-US';
+import { enGB } from 'date-fns/locale/en-GB';
+import { es } from 'date-fns/locale/es';
+import { fr } from 'date-fns/locale/fr';
+import { ru } from 'date-fns/locale/ru';
 
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { initEvents } from './events';
 import './calendar.css';
-import { generateId } from '@/utils/generateId';
 import Toolbar from './Toolbar';
+import { generateId } from '@/utils/generateId';
 export interface IEventInfo extends Event {
   id: number;
   desc?: string;
@@ -42,8 +42,11 @@ const addHours = (date: Date, hours: number) => {
 };
 
 const locales = {
-  "en-US": enUS,
-  "ru": ru,
+  'en-GB': enGB,
+  'en-US': enUS,
+  es: es,
+  fr: fr,
+  ru: ru,
 };
 
 const localizer = dateFnsLocalizer({
@@ -59,7 +62,6 @@ const initialEventFormState = {
 };
 
 const lang = {
-  en: undefined,
   'en-GB': undefined,
   'en-US': undefined,
   es: {
@@ -86,7 +88,7 @@ const lang = {
 
     showMore: (count: number) => `+${count} plus`,
   },
-  'ru': {
+  ru: {
     today: 'Сегодня',
     next: '>',
     previous: '<',
@@ -99,11 +101,11 @@ const lang = {
     time: 'Время',
     event: 'Событие',
     showMore: (count: number) => `показать все(${count}+)`,
-  }
-}
+  },
+};
 
 export default function Calend() {
-  const today = useMemo(() => new Date(), []);  
+  const today = useMemo(() => new Date(), []);
   const [events, setEvents] = useState<IEventInfo[]>(initEvents);
   const [openSlot, setOpenSlot] = useState(false);
   const [currentEvent, setCurrentEvent] = useState<Event | IEventInfo | null>(
@@ -112,9 +114,9 @@ export default function Calend() {
   const [eventInfoModal, setEventInfoModal] = useState(false);
   const [eventFormData, setEventFormData] = useState(initialEventFormState);
   const [showMoreEvents, setShowMoreEvents] = useState<Event[]>([]);
-  const [locale, setLocale] = useState<'en' | 'en-GB' | 'en-US' | 'es' | 'fr' | 'ru'>("ru");
-  // initialize initial view
-  const [view, setView] = useState<'day' | 'week' | 'month'>('month');
+  const [locale, setLocale] = useState<'en-GB' | 'en-US' | 'es' | 'fr' | 'ru'>(
+    'ru'
+  );
 
   const DnDCalendar = withDragAndDrop(Calendar);
 
@@ -205,16 +207,14 @@ export default function Calend() {
 
   return (
     <DnDCalendar
-      // defaultView={'month'}
+      defaultView={'month'}
       defaultDate={today}
-      // views={['month']}
-      // defaultView={Views.MONTH}
-      views={[Views.MONTH, Views.WEEK, Views.DAY]}
+      views={['month']}
       events={events}
       localizer={localizer}
       culture={locale}
       components={{
-        toolbar: () => Toolbar({locale, today}),
+        toolbar: () => Toolbar({ locale, today }),
       }}
       messages={lang[locale]}
       onEventDrop={onEventDrop}
@@ -228,11 +228,13 @@ export default function Calend() {
       }
       onShowMore={(events) => setShowMoreEvents(events)}
       popup={true} // Show truncated events in an overlay when you click the "+x more" link.
-      onView={(view) => view}
-      view={view}
       formats={{
-        dayFormat: (date: Date, culture: any, localizer: any) => localizer.format(date, 'EEEE', culture),
-        dayHeaderFormat: (date: Date, culture: any, localizer: any) => localizer.format(date, 'EE MMM do', culture),
+        dayFormat: (date: Date, culture: any, localizer: any) =>
+          localizer.format(date, 'EE', culture),
+        dayHeaderFormat: (date: Date, culture: any, localizer: any) =>
+          localizer.format(date, 'EE MMM do', culture),
+        weekdayFormat: (date, culture: any, localizer: any) =>
+          localizer.format(date, 'eeeeee', culture),
       }}
       className="big-calendar"
     />

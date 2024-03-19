@@ -26,7 +26,7 @@ async function getData() {
 export default async function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
-      <div className="z-10 max-w-5xl w-full items-center justify-between">
+      <div className="w-full items-center justify-between">
         <p className="flex w-full justify-center p-8">Календарь</p>
         <div className="flex h-full w-full items-end justify-center bg-white">
           <Calend />
