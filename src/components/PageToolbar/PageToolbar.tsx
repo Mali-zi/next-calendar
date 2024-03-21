@@ -104,7 +104,7 @@ export default function PageToolbar() {
           </button>
         </div>
       </div>
-      <hr className="mx-4 h-px bg-white" />
+      <hr className="h-px bg-white" />
       <div className="calendar-interface-toolbar">
         <button type="button" title="counter-panel" className="counter-panel">
           <div className="counter-panel-value">0</div>
@@ -113,6 +113,16 @@ export default function PageToolbar() {
         <button type="button" title="synсh-btn" className="synсh-btn">
           Синхронизировать календарь
         </button>
+        <div className="sharing-container">
+          <div className="calendar-sharing__switcher">
+            <div className="switcher-cursor"></div>
+            <div className="switcher-enabled">вкл</div>
+            {/* <div className="switcher-disabled">выкл</div> */}
+          </div>
+          <button type="button" title="synсh-btn" className="calendar-sharing__btn">
+            Свободные слоты
+          </button>
+        </div>
       </div>
     </div>
   );
